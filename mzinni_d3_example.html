@@ -32,7 +32,7 @@ var svg = d3.select("body").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.csv("graph.csv", function(error, links) {
+d3.csv("graph.csv"+'?' + Math.floor(Math.random() * 1000), function(error, links) {
   if (error) throw error;
 
   var nodesByName = {};
