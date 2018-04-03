@@ -25,42 +25,53 @@
 <script src="//d3js.org/d3.v4.min.js"></script>
 <script>
 
-//var header = "id,resource_type,resource_id,parent_resource_type,parent_resource_id\n";
-/*var csv_data =  '12649,"organization","660570133860","organization","660570133860\n"' + 
-                '12650,"organization","660570133860","organization","660570133860\n"' +
-                '12752,"folder","138672061205","organization","660570133860\n"' +
-                '12753,"folder","138672061205","folder","138672061205\n"' +
-                '12754,"folder","37188445764","folder","138672061205\n"' +
-                '12755,"folder","37188445764","folder","37188445764\n"';
-*/
+//var header = "id,resource_type,category,resource_id,parent_resource_type,parent_resource_id\n";
+var csv_data =
+'174290,"organization","resource","660570133860","organization","660570133860"\n\
+174393,"folder","resource","138672061205","organization","660570133860"\n\
+174395,"folder","resource","37188445764","folder","138672061205"\n\
+174397,"folder","resource","183126224153","organization","660570133860"\n\
+174399,"folder","resource","1031398079441","organization","660570133860"\n\
+174401,"folder","resource","789917358618","folder","1031398079441"\n\
+174403,"folder","resource","1092702677408","folder","1031398079441"\n\
+174405,"project","resource","lucid-arch-162323","folder","138672061205"\n\
+174409,"folder","resource","700946811639","folder","1092702677408"\n\
+174411,"folder","resource","821316288058","folder","1092702677408"\n\
+174413,"project","resource","forseti-test-110","folder","37188445764"\n\
+174417,"project","resource","forseti-test-16","folder","138672061205"\n';
 
-//var header = "source,target\n";
-var csv_data =  "A1,\nA2,A1\nA3,A2\nA4,A2\nA5,A2\n";
+console.log(csv_data);
 
 var table = d3.csvParseRows(csv_data, function(d, i) {
   return {
-    name: d[0],
-    parent: d[1]
+    id: d[0],
+    resource_type: d[1],
+    category: d[2],
+    resource_id: d[3],
+    parent_resource_type: d[4],
+    parent_resource_id: (d[1]=='organization' ? "" : d[5])
   };
 });
 
+console.log("table before transmogrification:");
 console.log(table);
 
 var treeData = d3.stratify()
-    .id(function(d) { return d.name; })
-    .parentId(function(d) { return d.parent; })
+    .id(function(d) { return d.resource_id; })
+    .parentId(function(d) { return d.parent_resource_id; })
     (table);
 
 // assign the name to each node
 treeData.each(function(d) {
-    d.name = d.id;
+    console.log(d);
+    d.name = d.data.resource_type + ':' + d.data.resource_id;
   });
 
 console.log(treeData);
 
 // set the dimensions and margins of the diagram
 var margin = {top: 20, right: 90, bottom: 30, left: 90},
-    width = 660 - margin.left - margin.right,
+    width = 760 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
 // declares a tree layout and assigns the size
@@ -118,7 +129,6 @@ node.append("text")
   .style("text-anchor", function(d) { 
     return d.children ? "end" : "start"; })
   .text(function(d) { return d.data.name; });
-
 
 </script>
 </body>
