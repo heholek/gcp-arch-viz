@@ -22,7 +22,7 @@
   
 </style>
 <body>
-<script src="//d3js.org/d3.v4.min.js"></script>
+<script src="//d3js.org/d3.v5.min.js"></script>
 <script>
 
 //var header = "id,resource_type,category,resource_id,parent_resource_type,parent_resource_id\n";
@@ -38,7 +38,98 @@ var csv_data =
 174409,"folder","resource","700946811639","folder","1092702677408"\n\
 174411,"folder","resource","821316288058","folder","1092702677408"\n\
 174413,"project","resource","forseti-test-110","folder","37188445764"\n\
-174417,"project","resource","forseti-test-16","folder","138672061205"\n';
+174417,"project","resource","forseti-test-16","folder","138672061205"\n\
+174421,"folder","resource","748954348978","folder","821316288058"\n\
+174426,"project","resource","iamux-project-2","folder","789917358618"\n\
+174432,"project","resource","iamux-project-2-167817","folder","789917358618"\n\
+174441,"folder","resource","296295060980","organization","660570133860"\n\
+174449,"project","resource","iamux-project-4","folder","748954348978"\n\
+174453,"project","resource","iamux-project-5","folder","748954348978"\n\
+174467,"project","resource","iamux-project-3","folder","821316288058"\n\
+174695,"project","resource","joe-test-proj36","organization","660570133860"\n\
+174696,"project","resource","henry-requestorpays","organization","660570133860"\n\
+174697,"project","resource","joe-test-proj41","organization","660570133860"\n\
+174698,"project","resource","joe-test-proj37","organization","660570133860"\n\
+174699,"project","resource","release-117-upgradetesting","organization","660570133860"\n\
+174700,"project","resource","joe-test-proj35","organization","660570133860"\n\
+174702,"project","resource","iamux-project-1","organization","660570133860"\n\
+174707,"project","resource","alexamiesforseti2","organization","660570133860"\n\
+174711,"project","resource","henry-vpc3","organization","660570133860"\n\
+174715,"project","resource","pso-cicd8","organization","660570133860"\n\
+174723,"project","resource","pso-cicd9","organization","660570133860"\n\
+174733,"project","resource","forseti-testing-20170306bbb","organization","660570133860"\n\
+174743,"project","resource","pso-cicd5","organization","660570133860"\n\
+174749,"project","resource","cicd-prod","organization","660570133860"\n\
+174777,"project","resource","joe-test-proj39","organization","660570133860"\n\
+174816,"project","resource","joe-project-p1","organization","660570133860"\n\
+174832,"project","resource","iamql-demo","organization","660570133860"\n\
+174839,"project","resource","mwwolters-184123","organization","660570133860"\n\
+174848,"project","resource","policyscanner-henry","organization","660570133860"\n\
+174856,"project","resource","release-testing-1-1-10","organization","660570133860"\n\
+174908,"project","resource","mikes-forseti-test-project","organization","660570133860"\n\
+174959,"project","resource","cicd-henry","organization","660570133860"\n\
+175001,"project","resource","pso-cicd7","organization","660570133860"\n\
+175080,"project","resource","pso-cicd1-169819","organization","660570133860"\n\
+175194,"project","resource","forseti-summaries","organization","660570133860"\n';
+/*
+175207,"project","resource","joe-test-proj44","organization","660570133860"\n\
+175233,"project","resource","jamesharding-forsetti-20","organization","660570133860"\n\
+175342,"project","resource","mwwolters-forseti","organization","660570133860"\n\
+175399,"project","resource","steady-circuit-182208","organization","660570133860"\n\
+175452,"project","resource","liang-iam-forseti","organization","660570133860"\n\
+175498,"project","resource","pso-cicd6","organization","660570133860"\n\
+175545,"project","resource","crypto-hallway-189721","organization","660570133860"\n\
+175572,"project","resource","release-testing-1-1-11bbb","organization","660570133860"\n\
+175623,"project","resource","pso-cicd4-169420","organization","660570133860"\n\
+175639,"project","resource","pso-cicd4","organization","660570133860"\n\
+175649,"project","resource","forseti-testing-20170306","organization","660570133860"\n\
+175660,"project","resource","felix-test-168518","organization","660570133860"\n\
+175747,"project","resource","policyscanner-carise","organization","660570133860"\n\
+175798,"project","resource","cicd-staging","organization","660570133860"\n\
+175858,"project","resource","csccapi660570133860","organization","660570133860"\n\
+175925,"project","resource","release-testing-1-1-11","organization","660570133860"\n\
+175926,"project","resource","joe-test-proj34","organization","660570133860"\n\
+175940,"project","resource","cai-test-199918","organization","660570133860"\n\
+175950,"project","resource","iam-explain-deployment-test","organization","660570133860"\n\
+176006,"project","resource","joe-test-proj31","organization","660570133860"\n\
+176007,"project","resource","forseti20-marten","organization","660570133860"\n\
+176019,"project","resource","joe-test-proj42","organization","660570133860"\n\
+176034,"project","resource","jharding-forseti-2","organization","660570133860"\n\
+176043,"project","resource","alexamiesforseti","organization","660570133860"\n\
+176057,"project","resource","ahoying-forseti-dev","organization","660570133860"\n\
+176135,"project","resource","inventoryscanner-henry","organization","660570133860"\n\
+176156,"project","resource","jiyun-test","organization","660570133860"\n\
+176293,"project","resource","stable-glass-185623","organization","660570133860"\n\
+176338,"project","resource","joe-test-proj38","organization","660570133860"\n\
+176398,"project","resource","trusty-charmer-23817","organization","660570133860"\n\
+176423,"project","resource","pso-cicd2","organization","660570133860"\n\
+176444,"project","resource","forseti20-marten-197921","organization","660570133860"\n\
+176482,"project","resource","iam-explain-henry","organization","660570133860"\n\
+176488,"project","resource","release-testing-1-1-10-b","organization","660570133860"\n\
+176517,"project","resource","joe-test-proj27","organization","660570133860"\n\
+176520,"project","resource","joe-test-proj33","organization","660570133860"\n\
+176569,"project","resource","pso-cicd10","organization","660570133860"\n\
+176598,"project","resource","joe-test-proj32","organization","660570133860"\n\
+176631,"project","resource","joe-project-p2","organization","660570133860"\n\
+176747,"project","resource","policyscanner-demo","organization","660570133860"\n\
+176836,"project","resource","henry-rc2","organization","660570133860"\n\
+176851,"project","resource","jiyun-test-183817","organization","660570133860"\n\
+176893,"project","resource","iap-1-174217","organization","660570133860"\n\
+176983,"project","resource","pso-cicd1","organization","660570133860"\n\
+177080,"project","resource","jentong-forseti-test","organization","660570133860"\n\
+177088,"project","resource","forseti-demo-184803","organization","660570133860"\n\
+177124,"project","resource","james-forseti-testing","organization","660570133860"\n\
+177171,"project","resource","pso-cicd3","organization","660570133860"\n\
+177189,"project","resource","clouddevdemo-197919","organization","660570133860"\n\
+177256,"project","resource","iam-explain-deployment","organization","660570133860"\n\
+177269,"project","resource","cicd-canary","organization","660570133860"\n\
+177335,"project","resource","james-forseti-testing-182820","organization","660570133860"\n\
+177343,"project","resource","joe-test-proj40","organization","660570133860"\n\
+177344,"project","resource","joe-test-proj43","organization","660570133860"\n\
+177432,"project","resource","joe-test-proj30","organization","660570133860"\n\
+177442,"project","resource","james-harding-wt","organization","660570133860"\n\
+177484,"project","resource","stable-device-182522","organization","660570133860"\n';
+*/
 
 console.log(csv_data);
 
@@ -53,7 +144,6 @@ var table = d3.csvParseRows(csv_data, function(d, i) {
   };
 });
 
-console.log("table before transmogrification:");
 console.log(table);
 
 var treeData = d3.stratify()
@@ -63,7 +153,6 @@ var treeData = d3.stratify()
 
 // assign the name to each node
 treeData.each(function(d) {
-    console.log(d);
     d.name = d.data.resource_type + ':' + d.data.resource_id;
   });
 
@@ -71,8 +160,8 @@ console.log(treeData);
 
 // set the dimensions and margins of the diagram
 var margin = {top: 20, right: 90, bottom: 30, left: 90},
-    width = 760 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    width = 960 - margin.left - margin.right,
+    height = 1000 - margin.top - margin.bottom;
 
 // declares a tree layout and assigns the size
 var treemap = d3.tree()
