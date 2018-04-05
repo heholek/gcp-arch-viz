@@ -1,33 +1,36 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<style> /* set the CSS */
-    
+<style>
+  /* set the CSS */
+
   .node circle {
     fill: #fff;
     stroke: steelblue;
     stroke-width: 3px;
   }
-  
-  .node text { font: 12px sans-serif; }
-  
+
+  .node text {
+    font: 12px sans-serif;
+  }
+
   .node--internal text {
     text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
   }
-  
+
   .link {
     fill: none;
     stroke: #ccc;
     stroke-width: 2px;
   }
-  
 </style>
-<body>
-<script src="//d3js.org/d3.v5.min.js"></script>
-<script>
 
-//var header = "id,resource_type,category,resource_id,parent_resource_type,parent_resource_id\n";
-var csv_data =
-'174290,"organization","resource","660570133860","organization","660570133860"\n\
+<body>
+  <script src="//d3js.org/d3.v5.min.js"></script>
+  <script>
+
+    //var header = "id,resource_type,category,resource_id,parent_resource_type,parent_resource_id\n";
+    var csv_data =
+      '174290,"organization","resource","660570133860","organization","660570133860"\n\
 174393,"folder","resource","138672061205","organization","660570133860"\n\
 174395,"folder","resource","37188445764","folder","138672061205"\n\
 174397,"folder","resource","183126224153","organization","660570133860"\n\
@@ -71,153 +74,160 @@ var csv_data =
 175001,"project","resource","pso-cicd7","organization","660570133860"\n\
 175080,"project","resource","pso-cicd1-169819","organization","660570133860"\n\
 175194,"project","resource","forseti-summaries","organization","660570133860"\n';
-/*
-175207,"project","resource","joe-test-proj44","organization","660570133860"\n\
-175233,"project","resource","jamesharding-forsetti-20","organization","660570133860"\n\
-175342,"project","resource","mwwolters-forseti","organization","660570133860"\n\
-175399,"project","resource","steady-circuit-182208","organization","660570133860"\n\
-175452,"project","resource","liang-iam-forseti","organization","660570133860"\n\
-175498,"project","resource","pso-cicd6","organization","660570133860"\n\
-175545,"project","resource","crypto-hallway-189721","organization","660570133860"\n\
-175572,"project","resource","release-testing-1-1-11bbb","organization","660570133860"\n\
-175623,"project","resource","pso-cicd4-169420","organization","660570133860"\n\
-175639,"project","resource","pso-cicd4","organization","660570133860"\n\
-175649,"project","resource","forseti-testing-20170306","organization","660570133860"\n\
-175660,"project","resource","felix-test-168518","organization","660570133860"\n\
-175747,"project","resource","policyscanner-carise","organization","660570133860"\n\
-175798,"project","resource","cicd-staging","organization","660570133860"\n\
-175858,"project","resource","csccapi660570133860","organization","660570133860"\n\
-175925,"project","resource","release-testing-1-1-11","organization","660570133860"\n\
-175926,"project","resource","joe-test-proj34","organization","660570133860"\n\
-175940,"project","resource","cai-test-199918","organization","660570133860"\n\
-175950,"project","resource","iam-explain-deployment-test","organization","660570133860"\n\
-176006,"project","resource","joe-test-proj31","organization","660570133860"\n\
-176007,"project","resource","forseti20-marten","organization","660570133860"\n\
-176019,"project","resource","joe-test-proj42","organization","660570133860"\n\
-176034,"project","resource","jharding-forseti-2","organization","660570133860"\n\
-176043,"project","resource","alexamiesforseti","organization","660570133860"\n\
-176057,"project","resource","ahoying-forseti-dev","organization","660570133860"\n\
-176135,"project","resource","inventoryscanner-henry","organization","660570133860"\n\
-176156,"project","resource","jiyun-test","organization","660570133860"\n\
-176293,"project","resource","stable-glass-185623","organization","660570133860"\n\
-176338,"project","resource","joe-test-proj38","organization","660570133860"\n\
-176398,"project","resource","trusty-charmer-23817","organization","660570133860"\n\
-176423,"project","resource","pso-cicd2","organization","660570133860"\n\
-176444,"project","resource","forseti20-marten-197921","organization","660570133860"\n\
-176482,"project","resource","iam-explain-henry","organization","660570133860"\n\
-176488,"project","resource","release-testing-1-1-10-b","organization","660570133860"\n\
-176517,"project","resource","joe-test-proj27","organization","660570133860"\n\
-176520,"project","resource","joe-test-proj33","organization","660570133860"\n\
-176569,"project","resource","pso-cicd10","organization","660570133860"\n\
-176598,"project","resource","joe-test-proj32","organization","660570133860"\n\
-176631,"project","resource","joe-project-p2","organization","660570133860"\n\
-176747,"project","resource","policyscanner-demo","organization","660570133860"\n\
-176836,"project","resource","henry-rc2","organization","660570133860"\n\
-176851,"project","resource","jiyun-test-183817","organization","660570133860"\n\
-176893,"project","resource","iap-1-174217","organization","660570133860"\n\
-176983,"project","resource","pso-cicd1","organization","660570133860"\n\
-177080,"project","resource","jentong-forseti-test","organization","660570133860"\n\
-177088,"project","resource","forseti-demo-184803","organization","660570133860"\n\
-177124,"project","resource","james-forseti-testing","organization","660570133860"\n\
-177171,"project","resource","pso-cicd3","organization","660570133860"\n\
-177189,"project","resource","clouddevdemo-197919","organization","660570133860"\n\
-177256,"project","resource","iam-explain-deployment","organization","660570133860"\n\
-177269,"project","resource","cicd-canary","organization","660570133860"\n\
-177335,"project","resource","james-forseti-testing-182820","organization","660570133860"\n\
-177343,"project","resource","joe-test-proj40","organization","660570133860"\n\
-177344,"project","resource","joe-test-proj43","organization","660570133860"\n\
-177432,"project","resource","joe-test-proj30","organization","660570133860"\n\
-177442,"project","resource","james-harding-wt","organization","660570133860"\n\
-177484,"project","resource","stable-device-182522","organization","660570133860"\n';
-*/
+    /*
+    175207,"project","resource","joe-test-proj44","organization","660570133860"\n\
+    175233,"project","resource","jamesharding-forsetti-20","organization","660570133860"\n\
+    175342,"project","resource","mwwolters-forseti","organization","660570133860"\n\
+    175399,"project","resource","steady-circuit-182208","organization","660570133860"\n\
+    175452,"project","resource","liang-iam-forseti","organization","660570133860"\n\
+    175498,"project","resource","pso-cicd6","organization","660570133860"\n\
+    175545,"project","resource","crypto-hallway-189721","organization","660570133860"\n\
+    175572,"project","resource","release-testing-1-1-11bbb","organization","660570133860"\n\
+    175623,"project","resource","pso-cicd4-169420","organization","660570133860"\n\
+    175639,"project","resource","pso-cicd4","organization","660570133860"\n\
+    175649,"project","resource","forseti-testing-20170306","organization","660570133860"\n\
+    175660,"project","resource","felix-test-168518","organization","660570133860"\n\
+    175747,"project","resource","policyscanner-carise","organization","660570133860"\n\
+    175798,"project","resource","cicd-staging","organization","660570133860"\n\
+    175858,"project","resource","csccapi660570133860","organization","660570133860"\n\
+    175925,"project","resource","release-testing-1-1-11","organization","660570133860"\n\
+    175926,"project","resource","joe-test-proj34","organization","660570133860"\n\
+    175940,"project","resource","cai-test-199918","organization","660570133860"\n\
+    175950,"project","resource","iam-explain-deployment-test","organization","660570133860"\n\
+    176006,"project","resource","joe-test-proj31","organization","660570133860"\n\
+    176007,"project","resource","forseti20-marten","organization","660570133860"\n\
+    176019,"project","resource","joe-test-proj42","organization","660570133860"\n\
+    176034,"project","resource","jharding-forseti-2","organization","660570133860"\n\
+    176043,"project","resource","alexamiesforseti","organization","660570133860"\n\
+    176057,"project","resource","ahoying-forseti-dev","organization","660570133860"\n\
+    176135,"project","resource","inventoryscanner-henry","organization","660570133860"\n\
+    176156,"project","resource","jiyun-test","organization","660570133860"\n\
+    176293,"project","resource","stable-glass-185623","organization","660570133860"\n\
+    176338,"project","resource","joe-test-proj38","organization","660570133860"\n\
+    176398,"project","resource","trusty-charmer-23817","organization","660570133860"\n\
+    176423,"project","resource","pso-cicd2","organization","660570133860"\n\
+    176444,"project","resource","forseti20-marten-197921","organization","660570133860"\n\
+    176482,"project","resource","iam-explain-henry","organization","660570133860"\n\
+    176488,"project","resource","release-testing-1-1-10-b","organization","660570133860"\n\
+    176517,"project","resource","joe-test-proj27","organization","660570133860"\n\
+    176520,"project","resource","joe-test-proj33","organization","660570133860"\n\
+    176569,"project","resource","pso-cicd10","organization","660570133860"\n\
+    176598,"project","resource","joe-test-proj32","organization","660570133860"\n\
+    176631,"project","resource","joe-project-p2","organization","660570133860"\n\
+    176747,"project","resource","policyscanner-demo","organization","660570133860"\n\
+    176836,"project","resource","henry-rc2","organization","660570133860"\n\
+    176851,"project","resource","jiyun-test-183817","organization","660570133860"\n\
+    176893,"project","resource","iap-1-174217","organization","660570133860"\n\
+    176983,"project","resource","pso-cicd1","organization","660570133860"\n\
+    177080,"project","resource","jentong-forseti-test","organization","660570133860"\n\
+    177088,"project","resource","forseti-demo-184803","organization","660570133860"\n\
+    177124,"project","resource","james-forseti-testing","organization","660570133860"\n\
+    177171,"project","resource","pso-cicd3","organization","660570133860"\n\
+    177189,"project","resource","clouddevdemo-197919","organization","660570133860"\n\
+    177256,"project","resource","iam-explain-deployment","organization","660570133860"\n\
+    177269,"project","resource","cicd-canary","organization","660570133860"\n\
+    177335,"project","resource","james-forseti-testing-182820","organization","660570133860"\n\
+    177343,"project","resource","joe-test-proj40","organization","660570133860"\n\
+    177344,"project","resource","joe-test-proj43","organization","660570133860"\n\
+    177432,"project","resource","joe-test-proj30","organization","660570133860"\n\
+    177442,"project","resource","james-harding-wt","organization","660570133860"\n\
+    177484,"project","resource","stable-device-182522","organization","660570133860"\n';
+    */
 
-console.log(csv_data);
+    console.log(csv_data);
 
-var table = d3.csvParseRows(csv_data, function(d, i) {
-  return {
-    id: d[0],
-    resource_type: d[1],
-    category: d[2],
-    resource_id: d[3],
-    parent_resource_type: d[4],
-    parent_resource_id: (d[1]=='organization' ? "" : d[5])
-  };
-});
+    var table = d3.csvParseRows(csv_data, function (d, i) {
+      return {
+        id: d[0],
+        resource_type: d[1],
+        category: d[2],
+        resource_id: d[3],
+        parent_resource_type: d[4],
+        parent_resource_id: (d[1] == 'organization' ? "" : d[5])
+      };
+    });
 
-console.log(table);
+    console.log(table);
 
-var treeData = d3.stratify()
-    .id(function(d) { return d.resource_id; })
-    .parentId(function(d) { return d.parent_resource_id; })
-    (table);
+    var treeData = d3.stratify()
+      .id(function (d) { return d.resource_id; })
+      .parentId(function (d) { return d.parent_resource_id; })
+      (table);
 
-// assign the name to each node
-treeData.each(function(d) {
-    d.name = d.data.resource_type + ':' + d.data.resource_id;
-  });
+    // assign the name to each node
+    treeData.each(function (d) {
+      d.name = d.data.resource_type + ':' + d.data.resource_id;
+    });
 
-console.log(treeData);
+    console.log(treeData);
 
-// set the dimensions and margins of the diagram
-var margin = {top: 20, right: 90, bottom: 30, left: 90},
-    width = 960 - margin.left - margin.right,
-    height = 1000 - margin.top - margin.bottom;
+    // set the dimensions and margins of the diagram
+    var margin = { top: 20, right: 90, bottom: 30, left: 90 },
+      width = 960 - margin.left - margin.right,
+      height = 1000 - margin.top - margin.bottom;
 
-// declares a tree layout and assigns the size
-var treemap = d3.tree()
-    .size([height, width]);
+    // declares a tree layout and assigns the size
+    var treemap = d3.tree()
+      .size([height, width]);
 
-//  assigns the data to a hierarchy using parent-child relationships
-var nodes = d3.hierarchy(treeData, function(d) {
-    return d.children;
-  });
+    //  assigns the data to a hierarchy using parent-child relationships
+    var nodes = d3.hierarchy(treeData, function (d) {
+      return d.children;
+    });
 
-// maps the node data to the tree layout
-nodes = treemap(nodes);
+    // maps the node data to the tree layout
+    nodes = treemap(nodes);
 
-// append the svg object to the body of the page
-// appends a 'group' element to 'svg'
-// moves the 'group' element to the top left margin
-var svg = d3.select("body").append("svg")
+    // append the svg object to the body of the page
+    // appends a 'group' element to 'svg'
+    // moves the 'group' element to the top left margin
+    var svg = d3.select("body").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom),
-    g = svg.append("g")
-      .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
+      g = svg.append("g")
+        .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
 
-// adds the links between the nodes
-var link = g.selectAll(".link")
-    .data( nodes.descendants().slice(1))
-  .enter().append("path")
-    .attr("class", "link")
-    .attr("d", function(d) {
-       return "M" + d.y + "," + d.x
-         + "C" + (d.y + d.parent.y) / 2 + "," + d.x
-         + " " + (d.y + d.parent.y) / 2 + "," + d.parent.x
-         + " " + d.parent.y + "," + d.parent.x;
-       });
+    // adds the links between the nodes
+    var link = g.selectAll(".link")
+      .data(nodes.descendants().slice(1))
+      .enter().append("path")
+      .attr("class", "link")
+      .attr("d", function (d) {
+        return "M" + d.y + "," + d.x
+          + "C" + (d.y + d.parent.y) / 2 + "," + d.x
+          + " " + (d.y + d.parent.y) / 2 + "," + d.parent.x
+          + " " + d.parent.y + "," + d.parent.x;
+      });
 
-// adds each node as a group
-var node = g.selectAll(".node")
-    .data(nodes.descendants())
-  .enter().append("g")
-    .attr("class", function(d) { 
-      return "node" + 
-        (d.children ? " node--internal" : " node--leaf"); })
-    .attr("transform", function(d) { 
-      return "translate(" + d.y + "," + d.x + ")"; });
+    // adds each node as a group
+    var node = g.selectAll(".node")
+      .data(nodes.descendants())
+      .enter().append("g")
+      .attr("class", function (d) {
+        return "node" +
+          (d.children ? " node--internal" : " node--leaf");
+      })
+      .attr("transform", function (d) {
+        return "translate(" + d.y + "," + d.x + ")";
+      });
 
-// adds the circle to the node
-node.append("circle")
-  .attr("r", 10);
+    // adds the image to the node
+    node.append("image")
+      .attr("xlink:href", function(d) { return "https://dtb5pzswcit1e.cloudfront.net/assets/images/product_logos/icon_gcp@2x.png"; })
+      .attr("x", function(d) { return -10;})
+      .attr("y", function(d) { return -10;})
+      .attr("height", 20)
+      .attr("width", 20);
 
-// adds the text to the node
-node.append("text")
-  .attr("dy", ".35em")
-  .attr("x", function(d) { return d.children ? -13 : 13; })
-  .style("text-anchor", function(d) { 
-    return d.children ? "end" : "start"; })
-  .text(function(d) { return d.data.name; });
+    // adds the text to the node
+    node.append("text")
+      .attr("dy", ".35em")
+      .attr("x", function (d) { return d.children ? -13 : 13; })
+      .style("text-anchor", function (d) {
+        return d.children ? "end" : "start";
+      })
+      .text(function (d) { return d.data.name; });
 
-</script>
+  </script>
 </body>
