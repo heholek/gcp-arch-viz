@@ -158,6 +158,19 @@ treeData.each(function(d) {
 
 console.log(treeData);
 
+// Collapse after the second level
+//treeData.children.forEach(collapse);
+//update(root);
+
+// Collapse the node and all it's children
+function collapse(d) {
+  if(d.children) {
+    d._children = d.children
+    d._children.forEach(collapse)
+    d.children = null
+  }
+}
+
 // set the dimensions and margins of the diagram
 var margin = {top: 20, right: 90, bottom: 30, left: 90},
     width = 960 - margin.left - margin.right,
