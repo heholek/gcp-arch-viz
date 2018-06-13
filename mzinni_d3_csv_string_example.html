@@ -136,6 +136,11 @@
 
     console.log(csv_data);
 
+    // set the dimensions and margins of the diagram
+    var margin = { top: 20, right: 180, bottom: 30, left: 180 },
+      width = 1500 - margin.left - margin.right,
+      height = 1200 - margin.top - margin.bottom;
+    
     var table = d3.csvParseRows(csv_data, function (d, i) {
       return {
         id: d[0],
@@ -150,6 +155,17 @@
 
     console.log(table);
 
+    // append the svg object to the body of the page
+    // appends a 'group' element to 'svg'
+    // moves the 'group' element to the top left margin
+    var svg = d3.select("body").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom);
+
+    var g = svg.append("g")
+      .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
+
     var treeData = d3.stratify()
       .id(function (d) { return d.resource_id; })
       .parentId(function (d) { return d.parent_resource_id; })
@@ -160,11 +176,65 @@
       d.name = d.data.resource_id;
     });
 
+    // treeData is the root of the tree,
+    // and the tree has all the data we need in it now.
+    // let's draw that thing...
     console.log(treeData);
 
     // Collapse after the second level
     //treeData.children.forEach(collapse);
-    //update(root);
+    update(treeData);
+
+    // Re-draw the tree
+    function update(source) {
+      //  assigns the data to a hierarchy using parent-child relationships
+      var nodes = d3.hierarchy(source, function (d) {
+        return d.children;
+      });
+
+      // declares a tree layout and assigns the size
+      var treemap = d3.tree().size([height, width]);
+      
+      // maps the node data to the tree layout
+      nodes = treemap(nodes);
+
+      // adds the links between the nodes
+      var link = g.selectAll(".link")
+        .data(nodes.descendants().slice(1))
+        .enter().append("path")
+        .attr("class", "link")
+        .attr("d", function (d) {
+          return "M" + d.y + "," + d.x
+            + "C" + (d.y + d.parent.y) / 2 + "," + d.x
+            + " " + (d.y + d.parent.y) / 2 + "," + d.parent.x
+            + " " + d.parent.y + "," + d.parent.x;
+        });
+
+      // adds each node as a group
+      var node = g.selectAll(".node")
+        .data(nodes.descendants())
+        .enter().append("g")
+        .attr("class", function (d) { return "node" + (d.children ? " node--internal" : " node--leaf"); })
+        .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; })
+        .on("click", click);
+
+      // adds the image to the node
+      node.append("image")
+        .attr("xlink:href", function (d) { return d.data.data.image; })
+        .attr("x", function (d) { return -10; })
+        .attr("y", function (d) { return -10; })
+        .attr("height", 20)
+        .attr("width", 20);
+
+      // adds the text to the node
+      node.append("text")
+        .attr("dy", ".35em")
+        .attr("x", function (d) { return d.children ? -13 : 13; })
+        .style("text-anchor", function (d) {
+          return d.children ? "end" : "start";
+        })
+        .text(function (d) { return d.data.name; });
+    }
 
     // Collapse the node and all it's children
     function collapse(d) {
@@ -175,74 +245,20 @@
       }
     }
 
-    // set the dimensions and margins of the diagram
-    var margin = { top: 20, right: 180, bottom: 30, left: 180 },
-      width = 1500 - margin.left - margin.right,
-      height = 1200 - margin.top - margin.bottom;
+    // Toggle children on click.
+    function click(d) {
+      console.log("click");
+      console.log(d);
 
-    // declares a tree layout and assigns the size
-    var treemap = d3.tree()
-      .size([height, width]);
-
-    //  assigns the data to a hierarchy using parent-child relationships
-    var nodes = d3.hierarchy(treeData, function (d) {
-      return d.children;
-    });
-
-    // maps the node data to the tree layout
-    nodes = treemap(nodes);
-
-    // append the svg object to the body of the page
-    // appends a 'group' element to 'svg'
-    // moves the 'group' element to the top left margin
-    var svg = d3.select("body").append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom),
-      g = svg.append("g")
-        .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
-
-    // adds the links between the nodes
-    var link = g.selectAll(".link")
-      .data(nodes.descendants().slice(1))
-      .enter().append("path")
-      .attr("class", "link")
-      .attr("d", function (d) {
-        return "M" + d.y + "," + d.x
-          + "C" + (d.y + d.parent.y) / 2 + "," + d.x
-          + " " + (d.y + d.parent.y) / 2 + "," + d.parent.x
-          + " " + d.parent.y + "," + d.parent.x;
-      });
-
-    // adds each node as a group
-    var node = g.selectAll(".node")
-      .data(nodes.descendants())
-      .enter().append("g")
-      .attr("class", function (d) {
-        return "node" +
-          (d.children ? " node--internal" : " node--leaf");
-      })
-      .attr("transform", function (d) {
-        return "translate(" + d.y + "," + d.x + ")";
-      });
-
-    // adds the image to the node
-    node.append("image")
-      .attr("xlink:href", function (d) { return d.data.data.image; })
-      .attr("x", function (d) { return -10; })
-      .attr("y", function (d) { return -10; })
-      .attr("height", 20)
-      .attr("width", 20);
-
-    // adds the text to the node
-    node.append("text")
-      .attr("dy", ".35em")
-      .attr("x", function (d) { return d.children ? -13 : 13; })
-      .style("text-anchor", function (d) {
-        return d.children ? "end" : "start";
-      })
-      .text(function (d) { return d.data.name; });
-
+      if (d.children) {
+        d._children = d.children;
+        d.children = null;
+      } else {
+        d.children = d._children;
+        d._children = null;
+      }
+      update(d);
+    }
 
     function getImageURL(resource_type) {
       var urlBase = "https://storage.googleapis.com/mps-storage/mzinni/external/gcp-arch-viz-images/";
