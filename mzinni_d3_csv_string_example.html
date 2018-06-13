@@ -1,33 +1,36 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<style> /* set the CSS */
-    
+<style>
+  /* set the CSS */
+
   .node circle {
     fill: #fff;
     stroke: steelblue;
     stroke-width: 3px;
   }
-  
-  .node text { font: 12px sans-serif; }
-  
+
+  .node text {
+    font: 12px sans-serif;
+  }
+
   .node--internal text {
     text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
   }
-  
+
   .link {
     fill: none;
     stroke: #ccc;
     stroke-width: 2px;
   }
-  
 </style>
-<body>
-<script src="//d3js.org/d3.v5.min.js"></script>
-<script>
 
-//var header = "id,resource_type,category,resource_id,parent_resource_type,parent_resource_id\n";
-var csv_data =
-'174290,"organization","resource","660570133860","organization","660570133860"\n\
+<body>
+  <script src="//d3js.org/d3.v5.min.js"></script>
+  <script>
+
+    //var header = "id,resource_type,category,resource_id,parent_resource_type,parent_resource_id\n";
+    var csv_data =
+      '174290,"organization","resource","660570133860","organization","660570133860"\n\
 174393,"folder","resource","138672061205","organization","660570133860"\n\
 174395,"folder","resource","37188445764","folder","138672061205"\n\
 174397,"folder","resource","183126224153","organization","660570133860"\n\
@@ -140,7 +143,8 @@ var table = d3.csvParseRows(csv_data, function(d, i) {
     category: d[2],
     resource_id: d[3],
     parent_resource_type: d[4],
-    parent_resource_id: (d[1]=='organization' ? "" : d[5])
+    parent_resource_id: (d[1]=='organization' ? "" : d[5]),
+    image: getImageURL(d[1])
   };
 });
 
@@ -153,7 +157,7 @@ var treeData = d3.stratify()
 
 // assign the name to each node
 treeData.each(function(d) {
-    d.name = d.data.resource_type + ':' + d.data.resource_id;
+    d.name = d.data.resource_id;
   });
 
 console.log(treeData);
@@ -172,9 +176,9 @@ function collapse(d) {
 }
 
 // set the dimensions and margins of the diagram
-var margin = {top: 20, right: 90, bottom: 30, left: 90},
-    width = 960 - margin.left - margin.right,
-    height = 1000 - margin.top - margin.bottom;
+var margin = {top: 20, right: 180, bottom: 30, left: 180},
+    width = 1500 - margin.left - margin.right,
+    height = 1200 - margin.top - margin.bottom;
 
 // declares a tree layout and assigns the size
 var treemap = d3.tree()
@@ -194,43 +198,71 @@ nodes = treemap(nodes);
 var svg = d3.select("body").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom),
-    g = svg.append("g")
-      .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
+      g = svg.append("g")
+        .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
 
-// adds the links between the nodes
-var link = g.selectAll(".link")
-    .data( nodes.descendants().slice(1))
-  .enter().append("path")
-    .attr("class", "link")
-    .attr("d", function(d) {
-       return "M" + d.y + "," + d.x
-         + "C" + (d.y + d.parent.y) / 2 + "," + d.x
-         + " " + (d.y + d.parent.y) / 2 + "," + d.parent.x
-         + " " + d.parent.y + "," + d.parent.x;
-       });
+    // adds the links between the nodes
+    var link = g.selectAll(".link")
+      .data(nodes.descendants().slice(1))
+      .enter().append("path")
+      .attr("class", "link")
+      .attr("d", function (d) {
+        return "M" + d.y + "," + d.x
+          + "C" + (d.y + d.parent.y) / 2 + "," + d.x
+          + " " + (d.y + d.parent.y) / 2 + "," + d.parent.x
+          + " " + d.parent.y + "," + d.parent.x;
+      });
 
-// adds each node as a group
-var node = g.selectAll(".node")
-    .data(nodes.descendants())
-  .enter().append("g")
-    .attr("class", function(d) { 
-      return "node" + 
-        (d.children ? " node--internal" : " node--leaf"); })
-    .attr("transform", function(d) { 
-      return "translate(" + d.y + "," + d.x + ")"; });
+    // adds each node as a group
+    var node = g.selectAll(".node")
+      .data(nodes.descendants())
+      .enter().append("g")
+      .attr("class", function (d) {
+        return "node" +
+          (d.children ? " node--internal" : " node--leaf");
+      })
+      .attr("transform", function (d) {
+        return "translate(" + d.y + "," + d.x + ")";
+      });
 
-// adds the circle to the node
-node.append("circle")
-  .attr("r", 10);
+    // adds the image to the node
+    node.append("image")
+      .attr("xlink:href", function(d) { return d.data.data.image; })
+      .attr("x", function(d) { return -10;})
+      .attr("y", function(d) { return -10;})
+      .attr("height", 20)
+      .attr("width", 20);
 
-// adds the text to the node
-node.append("text")
-  .attr("dy", ".35em")
-  .attr("x", function(d) { return d.children ? -13 : 13; })
-  .style("text-anchor", function(d) { 
-    return d.children ? "end" : "start"; })
-  .text(function(d) { return d.data.name; });
+    // adds the text to the node
+    node.append("text")
+      .attr("dy", ".35em")
+      .attr("x", function (d) { return d.children ? -13 : 13; })
+      .style("text-anchor", function (d) {
+        return d.children ? "end" : "start";
+      })
+      .text(function (d) { return d.data.name; });
 
-</script>
+
+    function getImageURL(resource_type) {
+      var urlBase = "https://storage.googleapis.com/mps-storage/mzinni/external/gcp-arch-viz-images/";
+      var imageFilename = "gcp-logo.png";
+      
+      switch(resource_type) {
+        case "organization":
+          imageFilename = "cloud_logo.png";
+          break;
+
+        case "folder":
+          imageFilename = "folder_logo.png";
+          break;
+
+        case "project":
+          imageFilename = "project_logo.png";
+          break;
+      }
+      
+      return urlBase + imageFilename;
+    }
+  </script>
 </body>
