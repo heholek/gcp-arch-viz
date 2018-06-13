@@ -140,6 +140,11 @@
     var margin = { top: 20, right: 180, bottom: 30, left: 180 },
       width = 1500 - margin.left - margin.right,
       height = 1200 - margin.top - margin.bottom;
+
+    var i = 0,
+      duration = 750;
+
+    var tree = d3.tree().size([height, width]);
     
     var table = d3.csvParseRows(csv_data, function (d, i) {
       return {
@@ -185,6 +190,103 @@
     //treeData.children.forEach(collapse);
     update(treeData);
 
+    var i = 0;
+    function update(source) {
+      tree(treeData);
+      
+      treeData.each(function(d) { d.y = d.depth * 320; });
+  
+      var node = g.selectAll('.node')
+        .data(treeData.descendants(), function(d) { return d.id || (d.id = ++i); });
+  
+      var nodeEnter = node
+        .enter()
+        .append("g")
+        .attr("class", "node")
+        .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+        .on("click", function(d) {
+          toggle(d);
+          update(d);
+        });
+  
+      // adds the image to the node
+      nodeEnter.append("image")
+        .attr("xlink:href", function (d) { return d.data.image; })
+        .attr("x", function (d) { return -10; })
+        .attr("y", function (d) { return -10; })
+        .attr("height", 25)
+        .attr("width", 25);
+
+      // adds the text to the node
+      nodeEnter.append("text")
+        .attr("x", function (d) { return d.children ? -13 : 13; })
+        .attr("dy", ".35em")
+        .style("text-anchor", function (d) {
+          return d.children ? "end" : "start";
+        })
+        .text(function (d) { return d.name; });
+
+      var nodeUpdate = nodeEnter.merge(node);
+      var duration = 500;
+  
+      nodeUpdate.transition()
+        .duration(duration)
+        .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+  
+      nodeUpdate.select("circle")
+        .attr("r", 8)
+        .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+  
+      nodeUpdate.select("text")
+        .style("fill-opacity", 1);
+  
+      var nodeExit = node
+        .exit()
+        .transition()
+        .duration(duration)
+        .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+        .remove();
+  
+      nodeExit.select("circle")
+        .attr("r", 1e-6);
+  
+      nodeExit.select("text")
+        .style("fill-opacity", 1e-6);
+  
+      var link = g.selectAll(".link")
+        .data(treeData.links(), function(d) { return d.target.id; });
+  
+      var linkEnter = link.enter().insert('path', "g")
+        .attr("class", "link")
+        .attr("d", d3.linkHorizontal()
+          .x(function(d) { return source.y0; })
+          .y(function(d) { return source.x0; }));
+  
+      var linkUpdate = linkEnter.merge(link);
+      linkUpdate
+        .transition()
+        .duration(duration)
+        .attr("d", d3.linkHorizontal()
+          .x(function(d) { return d.y; })
+          .y(function(d) { return d.x; }));
+  
+      link
+        .exit()
+        .transition()
+        .duration(duration)
+        .attr("d", d3.linkHorizontal()
+          .x(function(d) { return source.y; })
+          .y(function(d) { return source.x; })
+        )
+        .remove();
+  
+      node.each(function(d) {
+        d.x0 = d.x;
+        d.y0 = d.y;
+      });
+    }
+
+/*
     // Re-draw the tree
     function update(source) {
       //  assigns the data to a hierarchy using parent-child relationships
@@ -235,6 +337,7 @@
         })
         .text(function (d) { return d.data.name; });
     }
+*/
 
     // Collapse the node and all it's children
     function collapse(d) {
@@ -246,8 +349,8 @@
     }
 
     // Toggle children on click.
-    function click(d) {
-      console.log("click");
+    function toggle(d) {
+      console.log("toggle");
       console.log(d);
 
       if (d.children) {
