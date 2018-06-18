@@ -31,20 +31,28 @@
     var csv_data;
     var treeData, margin, tree, table, svg, g;
 
-    d3.text("gcp-data.csv").then(function(text) {
-      console.log(text);
-      csv_data = text;
+    // filevame is static, but add a random variable to the end to prevent browser caching
+    // aka - "I changed the content of the file, but why isn't that stuff drawing?!"
+    var filename = "gcp-data.csv" + "?nocache=" + Date.now(); 
 
-      console.log("Hello World!");
+    var preLoadTime = new Date().toLocaleTimeString();
+    console.log ("Loading file: " + filename + ", start time: " + preLoadTime);
+
+    d3.text(filename).then(function(text) {
+      var postLoadTime = new Date().toLocaleTimeString();
+      console.log ("CSV loaded: " + postLoadTime);
+
+      csv_data = text;
       console.log(csv_data);
 
+      i = 0, duration = 750;
 
       // set the dimensions and margins of the diagram
-      margin = { top: 20, right: 180, bottom: 30, left: 180 },
-        width = 2400 - margin.left - margin.right,
-        height = 3200 - margin.top - margin.bottom;
+      var margin = { top: 20, right: 180, bottom: 30, left: 180 };
 
-      i = 0, duration = 750;
+      // Use the parsed tree data to dynamically create height & width
+      var width = 2400 - margin.left - margin.right,
+        height = 4800 - margin.top - margin.bottom;
 
       tree = d3.tree().size([height, width]);
       
@@ -62,17 +70,6 @@
 
       console.log(table);
 
-      // append the svg object to the body of the page
-      // appends a 'group' element to 'svg'
-      // moves the 'group' element to the top left margin
-      svg = d3.select("body").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom);
-
-      g = svg.append("g")
-        .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
-
       treeData = d3.stratify()
         .id(function (d) { return d.resource_id; })
         .parentId(function (d) { return d.parent_resource_id; })
@@ -88,6 +85,18 @@
       // let's draw that thing...
       console.log(treeData);
 
+      // append the svg object to the body of the page
+      // appends a 'group' element to 'svg'
+      // moves the 'group' element to the top left margin
+      svg = d3.select("body").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom);
+
+      g = svg.append("g")
+        .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+
       // Collapse after the second level
       // TODO(mzinni):  enable this after folders & projects have color-coded indicators 
       //                of children/no-children
@@ -99,7 +108,7 @@
     function update(source) {
       tree(treeData);
       
-      treeData.each(function(d) { d.y = d.depth * 320; });
+      treeData.each(function(d) { d.y = d.depth * 240; });
   
       var node = g.selectAll('.node')
         .data(treeData.descendants(), function(d) { return d.id || (d.id = ++i); });
@@ -108,7 +117,7 @@
         .enter()
         .append("g")
         .attr("class", "node")
-        .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+        .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
         .on("click", function(d) {
           toggle(d);
           update(d);
@@ -137,11 +146,7 @@
       nodeUpdate.transition()
         .duration(duration)
         .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
-  
-      //nodeUpdate.select("circle")
-      //  .attr("r", 8)
-      //  .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
-  
+   
       nodeUpdate.select("text")
         .style("fill-opacity", 1);
   
@@ -164,8 +169,8 @@
       var linkEnter = link.enter().insert('path', "g")
         .attr("class", "link")
         .attr("d", d3.linkHorizontal()
-          .x(function(d) { return source.y0; })
-          .y(function(d) { return source.x0; }));
+          .x(function(d) { return source.y; })
+          .y(function(d) { return source.x; }));
   
       var linkUpdate = linkEnter.merge(link);
       linkUpdate
