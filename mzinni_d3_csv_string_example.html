@@ -122,12 +122,19 @@
           toggle(d);
           update(d);
         });
-  
+
+      nodeEnter.append("circle")
+      .attr("r", 22)
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; })
+      .style("fill-opacity", function(d) { return d._children ? 1 : 0; })
+      .style("stroke", "white")
+      .style("stroke-opacity", 0);
+
       // adds the image to the node
       nodeEnter.append("image")
         .attr("xlink:href", function (d) { return d.data.image; })
-        .attr("x", function (d) { return -15; })
-        .attr("y", function (d) { return -15; })
+        .attr("x", function (d) { return -16; })
+        .attr("y", function (d) { return -16; })
         .attr("height", 35)
         .attr("width", 35);
 
@@ -147,6 +154,12 @@
         .duration(duration)
         .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
    
+      nodeUpdate.select("circle")
+      .attr("r", 22)
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; })
+      .style("fill-opacity", function(d) { return d._children ? 1 : 0; })
+      .style("stroke-opacity", 0);
+
       nodeUpdate.select("text")
         .style("fill-opacity", 1);
   
@@ -157,8 +170,8 @@
         .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
         .remove();
   
-      //nodeExit.select("circle")
-      //  .attr("r", 1e-6);
+      nodeExit.select("circle")
+        .attr("r", 1e-6);
   
       nodeExit.select("text")
         .style("fill-opacity", 1e-6);
