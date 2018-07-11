@@ -31,7 +31,7 @@
     var csv_data;
     var treeData, margin, tree, table, svg, g;
 
-    // filevame is static, but add a random variable to the end to prevent browser caching
+    // filevame is static, but add a random variable to the end to prevent browser caching,
     // aka - "I changed the content of the file, but why isn't that stuff drawing?!"
     var filename = "gcp-data.csv" + "?nocache=" + Date.now(); 
 
@@ -58,12 +58,16 @@
       
       table = d3.csvParseRows(csv_data, function (d, i) {
         return {
+          // NOTE: This stuff is VERY tightly coupled to the format of the inventory data export. 
+          //       Because there are no headers in the CSV export file, the column order is
+          //       extremely important and needs to be carefully paid attention to.        
           id: d[0],
           resource_type: d[1],
           category: d[2],
           resource_id: d[3],
           parent_resource_type: d[4],
           parent_resource_id: (d[1] == 'organization' ? "" : d[5]),
+          resource_name: (d[6] != '' ? d[6] : d[7]),
           image: getImageURL(d[1])
         };
       });
@@ -77,7 +81,7 @@
 
       // assign the name to each node
       treeData.each(function (d) {
-        d.name = d.data.resource_id;
+        d.name = d.data.resource_name;
       });
 
       // treeData is the root of the tree,
@@ -220,8 +224,8 @@
 
     // Toggle children on click.
     function toggle(d) {
-      console.log("toggle");
-      console.log(d);
+      //console.log("toggle");
+      //console.log(d);
 
       if (d.children) {
         d._children = d.children;
